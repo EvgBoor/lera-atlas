@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 // GitHub Pages: https://<GITHUB_USER>.github.io/<REPO>/
-const GITHUB_USER = 'LOGIN'; // TODO: replace with your GitHub login
+const GITHUB_USER = 'evgboor';
 const REPO = 'lera-atlas';
 
 // Source briefs live in /src (docx), so the site code lives in /web.
