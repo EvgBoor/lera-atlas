@@ -1,7 +1,252 @@
 ---
-// OWNER: infographics — stub.
+// OWNER: infographics. Origin shares of the English vocabulary — donut + legend.
+// The legend list is the accessible data; the SVG donut is decorative (aria-hidden).
 import type { OriginShare } from '../../i18n';
 interface Props { shares: OriginShare[]; sourceNote: string }
 const { shares, sourceNote } = Astro.props;
+
+const total = shares.reduce((s, x) => s + x.value, 0) || 1;
+const GAP = shares.length > 1 ? 0.8 : 0; // gap between segments, in % of circumference
+let acc = 0;
+const segs = shares.map((s, i) => {
+  const pct = (s.value / total) * 100;
+  const seg = { ...s, i, pct, start: acc, len: Math.max(pct - GAP, 0.01) };
+  acc += pct;
+  return seg;
+});
+// Featured: French if present, else the largest share.
+const featured =
+  shares.find((s) => s.key === 'french') ?? [...shares].sort((a, b) => b.value - a.value)[0];
+const max = Math.max(...shares.map((s) => s.value), 1);
+const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
 ---
-<figure><ul>{shares.map((s) => <li>{s.label}: {s.value}%</li>)}</ul><figcaption>{sourceNote}</figcaption></figure>
+<figure class="oc" data-viz="origins">
+  <div class="oc-body">
+    <div class="oc-donut-wrap">
+      <svg class="oc-donut" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+        <circle class="oc-track" cx="60" cy="60" r="46" pathLength="100" />
+        {segs.map((s) => (
+          <circle
+            class="oc-seg"
+            data-k={s.key}
+            cx="60"
+            cy="60"
+            r="46"
+            pathLength="100"
+            stroke-dasharray={`${s.len} ${100 - s.len}`}
+            stroke-dashoffset={-s.start}
+            style={`--len:${s.len};--start:${s.start};--i:${s.i}`}
+          />
+        ))}
+      </svg>
+      {featured && (
+        <div class="oc-center" aria-hidden="true" data-k={featured.key}>
+          <span class="oc-center-val">{fmt(featured.value)}<small>%</small></span>
+          <span class="oc-center-label">{featured.label}</span>
+        </div>
+      )}
+    </div>
+
+    <ul class="oc-legend">
+      {segs.map((s) => (
+        <li class="oc-item" data-k={s.key} style={`--w:${(s.value / max) * 100};--i:${s.i}`}>
+          <span class="oc-swatch" aria-hidden="true"></span>
+          <span class="oc-label">{s.label}</span>
+          <span class="oc-val">{fmt(s.value)}%</span>
+          <span class="oc-bar" aria-hidden="true"><span></span></span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  {sourceNote && <figcaption class="oc-cap">{sourceNote}</figcaption>}
+</figure>
+
+<style>
+  .oc {
+    --v-ink: var(--c-ink, #1f2a44);
+    --v-muted: var(--c-muted, #555e72);
+    --v-line: var(--c-line, rgba(31, 42, 68, 0.12));
+    --v-card: var(--c-card, #fffdf8);
+    --k-french: var(--c-french, #2f5bd3);
+    --k-latin: var(--c-latin, #d9485f);
+    --k-germanic: var(--c-germanic, #2a9d8f);
+    --k-greek: var(--c-greek, #e9a23b);
+    --k-other: var(--c-other, #9aa0a6);
+    margin: 1.5rem 0;
+    color: var(--v-ink);
+    font-family: inherit;
+  }
+  [data-k='french'] { --k: var(--k-french); }
+  [data-k='latin'] { --k: var(--k-latin); }
+  [data-k='germanic'] { --k: var(--k-germanic); }
+  [data-k='greek'] { --k: var(--k-greek); }
+  [data-k='other'] { --k: var(--k-other); }
+
+  .oc-body {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+    justify-items: center;
+  }
+  @media (min-width: 640px) {
+    .oc-body {
+      grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
+      justify-items: stretch;
+      gap: 2.5rem;
+    }
+  }
+
+  /* ---------- donut ---------- */
+  .oc-donut-wrap {
+    position: relative;
+    width: min(100%, 280px);
+    aspect-ratio: 1;
+  }
+  .oc-donut {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    overflow: visible;
+  }
+  .oc-track {
+    fill: none;
+    stroke: var(--v-line);
+    stroke-width: 16;
+  }
+  .oc-seg {
+    fill: none;
+    stroke: var(--k);
+    stroke-width: 16;
+    stroke-linecap: butt;
+    stroke-dasharray: var(--len) calc(100 - var(--len));
+    stroke-dashoffset: calc(-1 * var(--start));
+    transition: opacity 0.25s ease, stroke-width 0.25s ease;
+  }
+  .oc-center {
+    position: absolute;
+    inset: 22%;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--v-card);
+    box-shadow: inset 0 0 0 1px var(--v-line);
+    padding: 0.5rem;
+  }
+  .oc-center-val {
+    font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+    font-size: clamp(2rem, 9vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--k);
+  }
+  .oc-center-val small { font-size: 0.5em; margin-left: 0.05em; }
+  .oc-center-label {
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--v-muted);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- legend ---------- */
+  .oc-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.7rem;
+    width: 100%;
+    min-width: 0;
+  }
+  .oc-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'sw label val' 'bar bar bar';
+    align-items: center;
+    column-gap: 0.6rem;
+    row-gap: 0.3rem;
+    border-radius: 10px;
+    transition: opacity 0.25s ease;
+  }
+  .oc-swatch {
+    grid-area: sw;
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 4px;
+    background: var(--k);
+  }
+  .oc-label { grid-area: label; overflow-wrap: break-word; line-height: 1.3; }
+  .oc-val {
+    grid-area: val;
+    font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .oc-bar {
+    grid-area: bar;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--v-line);
+    overflow: hidden;
+  }
+  .oc-bar span {
+    display: block;
+    height: 100%;
+    width: calc(var(--w) * 1%);
+    border-radius: inherit;
+    background: var(--k);
+    transform-origin: left;
+  }
+
+  .oc-cap {
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    color: var(--v-muted);
+    text-align: center;
+  }
+  @media (min-width: 640px) { .oc-cap { text-align: left; } }
+
+  /* ---------- legend hover highlights its segment ---------- */
+  .oc:has(.oc-item:hover) .oc-seg,
+  .oc:has(.oc-item:hover) .oc-item { opacity: 0.3; }
+  .oc:has(.oc-item[data-k='french']:hover) [data-k='french'],
+  .oc:has(.oc-item[data-k='latin']:hover) [data-k='latin'],
+  .oc:has(.oc-item[data-k='germanic']:hover) [data-k='germanic'],
+  .oc:has(.oc-item[data-k='greek']:hover) [data-k='greek'],
+  .oc:has(.oc-item[data-k='other']:hover) [data-k='other'] { opacity: 1; stroke-width: 19; }
+
+  /* ---------- motion ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .oc.is-armed .oc-seg {
+      transition: stroke-dasharray 0.9s cubic-bezier(0.3, 0.7, 0.2, 1) calc(var(--i) * 0.15s),
+        opacity 0.25s ease, stroke-width 0.25s ease;
+    }
+    .oc.is-armed:not(.is-in) .oc-seg { stroke-dasharray: 0 100; }
+    .oc.is-armed .oc-bar span { transition: transform 0.8s cubic-bezier(0.3, 0.7, 0.2, 1) calc(0.2s + var(--i) * 0.12s); }
+    .oc.is-armed:not(.is-in) .oc-bar span { transform: scaleX(0); }
+    .oc.is-armed .oc-center { transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s; }
+    .oc.is-armed:not(.is-in) .oc-center { opacity: 0; transform: scale(0.85); }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.3 },
+    );
+    document.querySelectorAll<HTMLElement>('[data-viz="origins"]').forEach((root) => {
+      root.classList.add('is-armed');
+      io.observe(root);
+    });
+  }
+</script>

@@ -1,7 +1,212 @@
 ---
-// OWNER: infographics — stub. Animal (Germanic) vs meat (French).
+// OWNER: infographics. Animal (Germanic, on the hoof) vs meat (French, on the plate).
 import type { SiteContent } from '../../i18n';
 interface Props { doublets: SiteContent['origins']['doublets'] }
 const { doublets } = Astro.props;
+
+// Decorative pictograms keyed by the English word (not human text; aria-hidden).
+const animalIcon: Record<string, string> = {
+  cow: '🐄', ox: '🐂', oxen: '🐂', bull: '🐂', calf: '🐮', pig: '🐖', swine: '🐖', hog: '🐖',
+  boar: '🐗', sheep: '🐑', lamb: '🐑', ewe: '🐑', deer: '🦌', stag: '🦌', hen: '🐔',
+  chicken: '🐔', fowl: '🐓', bird: '🐦', goat: '🐐', hare: '🐇', rabbit: '🐇', duck: '🦆',
+};
+const meatIcon: Record<string, string> = {
+  beef: '🥩', veal: '🥩', pork: '🥓', bacon: '🥓', mutton: '🍖', venison: '🍖',
+  poultry: '🍗', chicken: '🍗',
+};
+const key = (w: string) => w.trim().toLowerCase().split(/[\s,/(]/)[0];
+const icA = (w: string) => animalIcon[key(w)] ?? '🌿';
+const icM = (w: string) => meatIcon[key(w)] ?? '🍽️';
 ---
-<div>{doublets.pairs.map((p) => <p>{p.germanic} → {p.french}</p>)}</div>
+<div class="db" data-viz="doublets">
+  {doublets.title && (
+    <h3 class="db-title">
+      <span class="db-title-ic" aria-hidden="true">🌾</span>
+      <span>{doublets.title}</span>
+      <span class="db-title-ic" aria-hidden="true">🍽️</span>
+    </h3>
+  )}
+  <ul class="db-list">
+    {doublets.pairs.map((p, i) => (
+      <li class="db-row" style={`--i:${i}`}>
+        <span class="db-pill db-animal" lang="en">
+          <span class="db-ic" aria-hidden="true">{icA(p.germanic)}</span>
+          <span class="db-word">{p.germanic}</span>
+        </span>
+        <span class="db-mid">
+          {p.gloss && <span class="db-gloss" lang="fr">{p.gloss}</span>}
+          <svg class="db-arrow" viewBox="0 0 60 12" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <path d="M2 6 H54" pathLength="1" />
+            <path d="M49 1.5 L56 6 L49 10.5" class="db-head" />
+          </svg>
+        </span>
+        <span class="db-pill db-meat" lang="en">
+          <span class="db-word">{p.french}</span>
+          <span class="db-ic" aria-hidden="true">{icM(p.french)}</span>
+        </span>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .db {
+    --v-ink: var(--c-ink, #1f2a44);
+    --v-muted: var(--c-muted, #555e72);
+    --v-line: var(--c-line, rgba(31, 42, 68, 0.12));
+    --v-card: var(--c-card, #fffdf8);
+    --v-green: var(--c-germanic, #2a9d8f);
+    --v-blue: var(--c-french, #2f5bd3);
+    position: relative;
+    margin: 1.5rem 0;
+    padding: 1.1rem clamp(0.75rem, 3vw, 1.5rem) 1.25rem;
+    border-radius: 20px;
+    border: 1px solid var(--v-line);
+    color: var(--v-ink);
+    font-family: inherit;
+    overflow: hidden;
+    /* left half: meadow; right half: gingham tablecloth */
+    background:
+      linear-gradient(to right, rgba(42, 157, 143, 0.07) 0 50%, transparent 50%),
+      repeating-linear-gradient(0deg, rgba(47, 91, 211, 0.05) 0 10px, transparent 10px 20px) right / 50% 100% no-repeat,
+      repeating-linear-gradient(90deg, rgba(47, 91, 211, 0.05) 0 10px, transparent 10px 20px) right / 50% 100% no-repeat,
+      var(--v-card);
+  }
+  .db-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 0 0 1rem;
+    font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+    font-size: clamp(1.1rem, 4vw, 1.35rem);
+    line-height: 1.25;
+    text-align: center;
+  }
+  .db-title-ic { font-size: 1.2em; flex: none; }
+
+  .db-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .db-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(3rem, auto) minmax(0, 1fr);
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .db-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: var(--v-card);
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: clamp(0.92rem, 3.6vw, 1.05rem);
+    box-shadow: 0 6px 16px -14px rgba(31, 42, 68, 0.6);
+  }
+  .db-word { min-width: 0; overflow-wrap: anywhere; line-height: 1.2; }
+  .db-animal {
+    border-color: rgba(42, 157, 143, 0.55);
+    border-color: color-mix(in srgb, var(--v-green) 55%, transparent);
+    justify-self: end;
+  }
+  .db-meat {
+    border-color: rgba(47, 91, 211, 0.5);
+    border-color: color-mix(in srgb, var(--v-blue) 50%, transparent);
+    justify-self: start;
+    font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+    font-style: italic;
+  }
+  .db-ic {
+    font-size: 1.3em;
+    line-height: 1;
+    flex: none;
+    font-style: normal;
+    display: inline-block;
+  }
+  .db-row:hover .db-animal .db-ic { animation: db-wiggle 0.6s ease; }
+
+  .db-mid {
+    display: grid;
+    justify-items: center;
+    gap: 0.1rem;
+    min-width: 3rem;
+  }
+  .db-gloss {
+    font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
+    font-size: 0.74rem;
+    color: var(--v-muted);
+    font-style: italic;
+    white-space: nowrap;
+  }
+  .db-arrow {
+    width: 100%;
+    min-width: 2.5rem;
+    height: 12px;
+    overflow: visible;
+  }
+  .db-arrow path {
+    fill: none;
+    stroke: var(--v-muted);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .db-arrow path:first-child { stroke-dasharray: 0.06 0.05; }
+
+  @media (max-width: 400px) {
+    .db-pill { padding: 0.4rem 0.55rem; gap: 0.3rem; }
+    .db-row { gap: 0.25rem; }
+  }
+
+  @keyframes db-wiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-12deg); }
+    75% { transform: rotate(10deg); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .db.is-armed .db-animal,
+    .db.is-armed .db-meat,
+    .db.is-armed .db-mid {
+      transition: opacity 0.55s ease calc(var(--i) * 0.12s),
+        transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i) * 0.12s);
+    }
+    .db.is-armed .db-meat { transition-delay: calc(0.25s + var(--i) * 0.12s); }
+    .db.is-armed:not(.is-in) .db-animal { opacity: 0; transform: translateX(-18px); }
+    .db.is-armed:not(.is-in) .db-meat { opacity: 0; transform: translateX(18px) scale(0.9); }
+    .db.is-armed:not(.is-in) .db-mid { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .db-row:hover .db-animal .db-ic { animation: none; }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.25 },
+    );
+    document.querySelectorAll<HTMLElement>('[data-viz="doublets"]').forEach((root) => {
+      root.classList.add('is-armed');
+      io.observe(root);
+    });
+  }
+</script>
