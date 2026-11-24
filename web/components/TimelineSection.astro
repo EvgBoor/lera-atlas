@@ -1,7 +1,16 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Timeline section wrapper; the viz itself lives in viz/Timeline.astro.
 import type { SiteContent } from '../i18n';
+import SectionHead from './SectionHead.astro';
+import Timeline from './viz/Timeline.astro';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
 ---
-<section data-stub="TimelineSection"><h2>TimelineSection</h2></section>
+<section id="timeline" class="section section--tint" aria-labelledby="timeline-title">
+  <div class="container">
+    <SectionHead c={c} id="timeline" title={c.timeline.title} lead={c.timeline.lead} />
+    <div class="viz-frame reveal">
+      <Timeline events={c.timeline.events} />
+    </div>
+  </div>
+</section>
