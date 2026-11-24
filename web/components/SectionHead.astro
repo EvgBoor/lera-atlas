@@ -1,0 +1,72 @@
+---
+// OWNER: ui-builder. Shared section heading: number + nav label eyebrow, serif title, optional lead.
+import type { SiteContent } from '../i18n';
+interface Props {
+  c: SiteContent;
+  /** section id; number + eyebrow label are derived from c.nav */
+  id: string;
+  title: string;
+  lead?: string;
+  align?: 'left' | 'center';
+}
+const { c, id, title, lead, align = 'left' } = Astro.props;
+const idx = c.nav.findIndex((n) => n.id === id);
+const num = idx >= 0 ? String(idx + 1).padStart(2, '0') : null;
+const label = idx >= 0 ? c.nav[idx].label : null;
+---
+<header class:list={['shead', 'reveal', `shead--${align}`]}>
+  <p class="shead__eyebrow" aria-hidden={num ? undefined : 'true'}>
+    {num ? (
+      <>
+        <span class="shead__num">{num}</span>
+        <span class="shead__rule"></span>
+        <span class="shead__label">{label}</span>
+      </>
+    ) : (
+      <span class="shead__ornament">✦</span>
+    )}
+  </p>
+  <h2 id={`${id}-title`} class="shead__title">{title}</h2>
+  {lead && <p class="lead shead__lead">{lead}</p>}
+</header>
+
+<style>
+  .shead { margin-bottom: clamp(2.25rem, 1.5rem + 2.5vw, 3.75rem); }
+  .shead--center { text-align: center; }
+  .shead--center .shead__eyebrow { justify-content: center; }
+  .shead--center .shead__lead { margin-inline: auto; }
+
+  .shead__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 1.1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .shead__num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: 0;
+    color: var(--red);
+    line-height: 1;
+  }
+  .shead__rule {
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+  .shead__ornament { color: var(--red); font-size: 1.1rem; letter-spacing: 0; }
+  .shead__title {
+    font-size: var(--fs-h2);
+    max-width: 20ch;
+  }
+  .shead--center .shead__title { margin-inline: auto; }
+  .shead__lead { margin-top: 1.25rem; }
+</style>

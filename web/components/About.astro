@@ -1,7 +1,114 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. About the project: aim, objectives, methods table (stacks on mobile), credits.
 import type { SiteContent } from '../i18n';
+import SectionHead from './SectionHead.astro';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
+const a = c.about;
 ---
-<section data-stub="About"><h2>About</h2></section>
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container">
+    <SectionHead c={c} id="about" title={a.title} />
+
+    <div class="about">
+      <p class="about__aim reveal">{a.aim}</p>
+
+      <ol class="objectives">
+        {a.objectives.map((o, i) => (
+          <li class="reveal" style={`--reveal-delay:${(i % 4) * 0.05}s`}>
+            <span class="objectives__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span>{o}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="methods-wrap reveal">
+      <table class="methods" aria-labelledby="about-title">
+        <tbody>
+          {a.methods.map((m) => (
+            <tr>
+              <th scope="row">{m.category}</th>
+              <td class="methods__m">{m.methods}</td>
+              <td class="methods__p">{m.purpose}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sign reveal">
+      <p class="sign__item">
+        <span class="sign__line" aria-hidden="true"></span>
+        <span class="sign__name">{a.author}</span>
+      </p>
+      <p class="sign__item">
+        <span class="sign__line" aria-hidden="true"></span>
+        <span class="sign__name">{a.supervisor}</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about { display: grid; gap: clamp(2rem, 4vw, 3.5rem); }
+  @media (min-width: 900px) { .about { grid-template-columns: 1fr 1.1fr; align-items: start; } }
+
+  .about__aim {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.45rem);
+    line-height: 1.4;
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--blue);
+  }
+
+  .objectives { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; }
+  .objectives li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--line-strong);
+  }
+  .objectives li:last-child { border-bottom: 0; }
+  .objectives__n { font-family: var(--font-serif); font-style: italic; color: var(--red); font-size: 1.1rem; line-height: 1.6; }
+
+  .methods-wrap {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    border-radius: var(--r);
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .methods { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+  .methods th, .methods td { text-align: left; vertical-align: top; padding: 1.1rem 1.25rem; }
+  .methods tr + tr > * { border-top: 1px solid var(--line); }
+  .methods th {
+    width: 22%;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: var(--paper-2);
+  }
+  .methods__m { width: 40%; font-weight: 600; }
+  .methods__p { color: var(--ink-soft); }
+
+  @media (max-width: 720px) {
+    .methods, .methods tbody, .methods tr, .methods th, .methods td { display: block; width: 100%; }
+    .methods th { padding-bottom: 0.6rem; }
+    .methods td { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+    .methods td:last-child { padding-bottom: 1.2rem; }
+    .methods tr + tr > * { border-top: 0; }
+    .methods tr + tr { border-top: 1px solid var(--line); }
+  }
+
+  .sign { display: flex; flex-wrap: wrap; gap: 1.5rem 3rem; margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+  .sign__item { margin: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  .sign__line {
+    width: 9rem; height: 10px;
+    background: var(--squiggle) repeat-x left center / 40px 8px;
+  }
+  .sign__name { font-weight: 700; }
+</style>

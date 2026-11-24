@@ -1,7 +1,34 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Origins chart + animal/meat doublets (viz components).
 import type { SiteContent } from '../i18n';
+import SectionHead from './SectionHead.astro';
+import OriginsChart from './viz/OriginsChart.astro';
+import Doublets from './viz/Doublets.astro';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
+const o = c.origins;
 ---
-<section data-stub="Origins"><h2>Origins</h2></section>
+<section id="origins" class="section" aria-labelledby="origins-title">
+  <div class="container">
+    <SectionHead c={c} id="origins" title={o.title} lead={o.lead} />
+    <div class="origins">
+      <div class="card origins__chart reveal">
+        <OriginsChart shares={o.shares} sourceNote={o.sourceNote} />
+      </div>
+      <div class="card origins__doublets reveal" style="--reveal-delay:.1s">
+        <Doublets doublets={o.doublets} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .origins {
+    display: grid;
+    gap: clamp(1rem, 2.5vw, 2rem);
+  }
+  .origins > .card {
+    padding: clamp(0.75rem, 3vw, 2.25rem);
+    min-width: 0;
+  }
+</style>

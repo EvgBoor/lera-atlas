@@ -1,7 +1,16 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Internationalisms: FR → EN → world (viz/WordRoutes).
 import type { SiteContent } from '../i18n';
+import SectionHead from './SectionHead.astro';
+import WordRoutes from './viz/WordRoutes.astro';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
 ---
-<section data-stub="Travelling"><h2>Travelling</h2></section>
+<section id="travelling" class="section section--tint" aria-labelledby="travelling-title">
+  <div class="container">
+    <SectionHead c={c} id="travelling" title={c.travelling.title} lead={c.travelling.lead} />
+    <div class="viz-frame reveal">
+      <WordRoutes words={c.travelling.words} />
+    </div>
+  </div>
+</section>

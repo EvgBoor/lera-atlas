@@ -1,7 +1,47 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Conclusion on an ink panel.
 import type { SiteContent } from '../i18n';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
 ---
-<section data-stub="Conclusion"><h2>Conclusion</h2></section>
+<section id="conclusion" class="section concl-section" aria-labelledby="conclusion-title">
+  <div class="container">
+    <div class="concl reveal">
+      <svg class="concl__wave" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q 75 2 150 20 T 300 20 T 450 20 T 600 20" /></svg>
+      <span class="concl__ornament" aria-hidden="true">✦</span>
+      <h2 id="conclusion-title" class="concl__title">{c.conclusion.title}</h2>
+      <div class="concl__body">
+        {c.conclusion.paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .concl {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 6vw, 5rem);
+    border-radius: var(--r-lg);
+    background:
+      radial-gradient(circle at 0% 0%, rgba(51, 86, 155, 0.55), transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(176, 65, 58, 0.35), transparent 50%),
+      var(--ink);
+    color: var(--paper);
+    box-shadow: var(--shadow-lg);
+  }
+  .concl__wave {
+    position: absolute; left: 0; right: 0; top: 2.25rem;
+    width: 100%; height: 30px;
+    fill: none; stroke: var(--paper); stroke-width: 1.2; stroke-dasharray: 5 7; opacity: 0.18;
+  }
+  .concl__ornament { display: block; color: #f0b7b0; font-size: 1.2rem; margin-bottom: 1rem; position: relative; }
+  .concl__title { position: relative; font-size: var(--fs-h2); color: var(--paper); max-width: 18ch; margin-bottom: 1.75rem; }
+  .concl__body { position: relative; max-width: var(--measure); }
+  .concl__body p {
+    font-family: var(--font-serif);
+    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.3rem);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--paper) 92%, transparent);
+  }
+</style>

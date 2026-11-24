@@ -1,7 +1,215 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Sticky slim header: brand mark, section nav with active state, RU/EN switch, reading progress.
 import type { SiteContent } from '../i18n';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const other = c.locale === 'ru' ? { href: `${base}en/`, lang: 'en' } : { href: base, lang: 'ru' };
 ---
-<section data-stub="Header"><h2>Header</h2></section>
+<header class="site-header" id="top">
+  <div class="site-header__inner container">
+    <a class="brand" href="#top" aria-label={c.meta.title}>
+      <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="none" stroke="currentColor" stroke-width="3" />
+        <path d="M13 47 Q 22.5 41 32 47 T 51 47" fill="none" stroke="var(--blue)" stroke-width="3" stroke-dasharray="4 4" stroke-linecap="round" />
+        <text x="32" y="39" text-anchor="middle" font-family="var(--font-serif)" font-size="30" font-style="italic" font-weight="700" fill="currentColor">A</text>
+        <circle cx="47" cy="17" r="4" fill="var(--red)" />
+      </svg>
+      <span class="brand__name">{c.meta.title}</span>
+    </a>
+
+    <nav class="snav" data-snav>
+      <ul class="snav__list">
+        {c.nav.map((n, i) => (
+          <li>
+            <a class="snav__link" href={`#${n.id}`} data-target={n.id}>
+              <span class="snav__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              {n.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a class="lang" href={other.href} hreflang={other.lang} lang={other.lang}>
+      <span class="lang__dot" aria-hidden="true"></span>{c.ui.langSwitch}
+    </a>
+  </div>
+  <div class="progress" aria-hidden="true"><span class="progress__bar" data-progress></span></div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--paper) 86%, transparent);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header__inner {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 2vw, 1.5rem);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: none;
+    color: var(--ink);
+    text-decoration: none;
+    min-width: 0;
+  }
+  .brand__mark { width: 32px; height: 32px; flex: none; }
+  .brand__name {
+    display: none;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 0.98rem;
+    max-width: 15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (min-width: 1200px) { .brand__name { display: block; } }
+
+  .snav {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 24px), transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 24px), transparent);
+  }
+  .snav::-webkit-scrollbar { display: none; }
+  .snav__list {
+    display: flex;
+    gap: 0.15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0 14px;
+    width: max-content;
+  }
+  .snav__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.25s, color 0.25s;
+  }
+  .snav__num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--ink-mute);
+  }
+  .snav__link:hover { color: var(--ink); background: var(--paper-3); }
+  .snav__link.is-active { color: var(--paper); background: var(--ink); }
+  .snav__link.is-active .snav__num { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+
+  .lang {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    text-decoration: none;
+    transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .lang__dot {
+    width: 0.5rem; height: 0.5rem; border-radius: 50%;
+    background: linear-gradient(90deg, var(--blue) 0 33%, var(--paper-2) 33% 66%, var(--red) 66%);
+    box-shadow: 0 0 0 1px var(--line-strong);
+  }
+  .lang:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .progress {
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    overflow: hidden;
+  }
+  .progress__bar {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--red));
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-progress]');
+  let ticking = false;
+  const update = () => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    if (bar) bar.style.transform = `scaleX(${p})`;
+    ticking = false;
+  };
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+
+  // Active section highlighting.
+  const nav = document.querySelector<HTMLElement>('[data-snav]');
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.snav__link'));
+  const byId = new Map(links.map((a) => [a.dataset.target!, a]));
+  const sections = links
+    .map((a) => document.getElementById(a.dataset.target!))
+    .filter((s): s is HTMLElement => !!s);
+
+  const setActive = (id: string | null) => {
+    links.forEach((a) => {
+      const on = a.dataset.target === id;
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+    const a = id ? byId.get(id) : null;
+    if (a && nav) {
+      const left = a.offsetLeft - nav.clientWidth / 2 + a.clientWidth / 2;
+      nav.scrollTo({ left, behavior: 'auto' });
+    }
+  };
+
+  if ('IntersectionObserver' in window && sections.length) {
+    const visible = new Set<string>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        });
+        const first = sections.find((s) => visible.has(s.id));
+        setActive(first ? first.id : null);
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>

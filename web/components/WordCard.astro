@@ -1,0 +1,59 @@
+---
+// OWNER: ui-builder. One borrowed word.
+import type { WordCard as W } from '../i18n';
+interface Props { w: W; delay?: number }
+const { w, delay = 0 } = Astro.props;
+---
+<li class="card card--lift wcard reveal" style={`--reveal-delay:${delay}s`}>
+  <div class="wcard__top">
+    <span class="wcard__en" lang="en">{w.en}</span>
+    {w.since && <span class="tag wcard__since">{w.since}</span>}
+  </div>
+  <span class="ipa wcard__ipa">/{w.ipa}/</span>
+  <span class="wcard__fr"><span class="tag tag--fr" aria-hidden="true">fr</span> <span lang="fr">{w.fr}</span></span>
+  <p class="wcard__meaning">{w.meaning}</p>
+  <p class="wcard__note">{w.note}</p>
+</li>
+
+<style>
+  .wcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.3rem 1.3rem 1.4rem;
+    overflow: hidden;
+  }
+  .wcard::after {
+    content: '';
+    position: absolute;
+    left: 1.3rem; right: 1.3rem; top: 0;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+    background: linear-gradient(90deg, var(--blue) 0 33%, transparent 33% 66%, var(--red) 66%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .wcard:hover::after { opacity: 1; }
+  .wcard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+  .wcard__en {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  .wcard__since { flex: none; margin-top: 0.35rem; }
+  .wcard__ipa { font-size: 0.88rem; color: var(--blue); }
+  .wcard__fr { font-size: var(--fs-small); color: var(--ink-soft); font-style: italic; }
+  .wcard__fr .tag { font-style: normal; }
+  .wcard__meaning { margin: 0.6rem 0 0; font-weight: 700; line-height: 1.45; }
+  .wcard__note {
+    margin: 0.35rem 0 0;
+    padding-top: 0.7rem;
+    border-top: 1px dashed var(--line);
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+</style>

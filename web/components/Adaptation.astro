@@ -1,7 +1,133 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Four adaptation levels (from → to) + types of borrowing.
 import type { SiteContent } from '../i18n';
+import SectionHead from './SectionHead.astro';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
+const a = c.adaptation;
+const icons: Record<string, string> = {
+  meaning: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 4v5l3 2',
+  pronunciation: 'M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4',
+  spelling: 'M5 19L10 5h1l5 14M7 14h7M18 19h2',
+  'word-formation': 'M4 12h6M10 7h4v10h-4M14 12h6',
+};
 ---
-<section data-stub="Adaptation"><h2>Adaptation</h2></section>
+<section id="adaptation" class="section" aria-labelledby="adaptation-title">
+  <div class="container">
+    <SectionHead c={c} id="adaptation" title={a.title} lead={a.lead} />
+
+    <ol class="levels">
+      {a.levels.map((l, i) => (
+        <li class="card card--lift level reveal" style={`--reveal-delay:${(i % 2) * 0.08}s`} data-level={l.id}>
+          <div class="level__head">
+            <span class="level__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d={icons[l.id] ?? icons.meaning} /></svg>
+            </span>
+            <span class="level__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          </div>
+          <h3 class="level__title">{l.title}</h3>
+          <p class="level__text">{l.text}</p>
+          <div class="level__ex">
+            <span class="level__from">{l.example.from}</span>
+            <span class="level__arrow" aria-hidden="true">
+              <svg viewBox="0 0 40 14"><path d="M1 7 Q 10 1 20 7 T 34 7" /><path d="M30 2.5 L35 7 L30 11.5" /></svg>
+            </span>
+            <span class="level__to">{l.example.to}</span>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="types">
+      <h3 class="types__title reveal"><span class="squiggle">{a.types.title}</span></h3>
+      <ul class="types__grid">
+        {a.types.items.map((t, i) => (
+          <li class="type reveal" style={`--reveal-delay:${(i % 3) * 0.08}s`}>
+            <span class="type__index" aria-hidden="true">{String.fromCharCode(97 + i)}</span>
+            <h4 class="type__name">{t.name}</h4>
+            <p class="type__text">{t.text}</p>
+            {t.examples.length > 0 && (
+              <ul class="chip-list">
+                {t.examples.map((e) => <li class="chip" lang="en">{e}</li>)}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .levels {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+  @media (min-width: 760px) { .levels { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .level {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.4rem, 3vw, 2rem);
+  }
+  .level__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; }
+  .level__icon {
+    display: grid; place-items: center;
+    width: 2.6rem; height: 2.6rem;
+    border-radius: 12px;
+    background: var(--blue-soft);
+    color: var(--blue);
+  }
+  .level:nth-child(even) .level__icon { background: var(--red-soft); color: var(--red); }
+  .level__icon svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .level__num { font-family: var(--font-serif); font-style: italic; font-size: 1.8rem; color: var(--line-strong); line-height: 1; }
+  .level__title { font-size: var(--fs-h3); margin-bottom: 0.6rem; }
+  .level__text { color: var(--ink-soft); flex: 1; }
+
+  .level__ex {
+    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+    padding: 0.9rem 1rem;
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    border: 1px dashed var(--line-strong);
+    font-size: var(--fs-small);
+  }
+  .level__from { color: var(--ink-mute); }
+  .level__to { color: var(--ink); font-weight: 700; }
+  .level__arrow svg { width: 2.2rem; height: 0.8rem; fill: none; stroke: var(--red); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; display: block; transform: rotate(90deg); margin-left: 0.2rem; }
+  @media (min-width: 520px) {
+    .level__ex { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 0.75rem; }
+    .level__arrow svg { transform: none; margin: 0; }
+  }
+
+  .types { margin-top: clamp(3.5rem, 7vw, 6rem); }
+  .types__title { font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.3rem); margin-bottom: 2rem; }
+  .types__grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    gap: 1.5rem 2rem;
+  }
+  @media (min-width: 760px) { .types__grid { grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); } }
+  .type {
+    position: relative;
+    padding: 1.25rem 0 0;
+    border-top: 2px solid var(--ink);
+  }
+  .type__index {
+    position: absolute; top: -0.85rem; right: 0;
+    display: grid; place-items: center;
+    width: 1.7rem; height: 1.7rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    font-family: var(--font-serif); font-style: italic; font-size: 0.95rem; line-height: 1;
+  }
+  .type__name { font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .type__text { color: var(--ink-soft); font-size: var(--fs-small); margin-bottom: 0.9rem; }
+</style>
