@@ -1,7 +1,59 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Bibliography.
 import type { SiteContent } from '../i18n';
+import SectionHead from './SectionHead.astro';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
+const host = (u: string) => {
+  try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; }
+};
 ---
-<section data-stub="Sources"><h2>Sources</h2></section>
+<section id="sources" class="section sources-section" aria-labelledby="sources-title">
+  <div class="container">
+    <SectionHead c={c} id="sources" title={c.sources.title} />
+    <ol class="sources reveal">
+      {c.sources.items.map((s) => (
+        <li class="src">
+          <span class="src__author">{s.author}</span>
+          <span class="src__title">{s.title}</span>
+          {s.url && (
+            <a class="src__link mono" href={s.url} target="_blank" rel="noopener noreferrer">{host(s.url)}<span aria-hidden="true"> ↗</span></a>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .sources-section { padding-bottom: clamp(3rem, 6vw, 5rem); }
+  .sources {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: src;
+    columns: 1;
+    column-gap: 3rem;
+  }
+  @media (min-width: 900px) { .sources { columns: 2; } }
+  .src {
+    counter-increment: src;
+    position: relative;
+    break-inside: avoid;
+    display: flex; flex-direction: column; gap: 0.1rem;
+    padding: 0.85rem 0 0.85rem 2.75rem;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-small);
+  }
+  .src::before {
+    content: counter(src, decimal-leading-zero);
+    position: absolute; left: 0; top: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .src__author { font-weight: 700; }
+  .src__title { font-style: italic; color: var(--ink-soft); }
+  .src__link { font-size: 0.75rem; word-break: break-all; }
+</style>
