@@ -1,7 +1,43 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. "Two shores of the Channel": prose with drop cap + pull quote.
 import type { SiteContent } from '../i18n';
+import SectionHead from './SectionHead.astro';
+import PullQuote from './PullQuote.astro';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
+const ps = c.intro.paragraphs;
+const split = Math.max(1, Math.ceil(ps.length / 2));
+const before = ps.slice(0, split);
+const after = ps.slice(split);
 ---
-<section data-stub="Intro"><h2>Intro</h2></section>
+<section id="intro" class="section" aria-labelledby="intro-title">
+  <div class="container">
+    <SectionHead c={c} id="intro" title={c.intro.title} />
+    <div class="intro prose">
+      {before.map((p, i) => <p class:list={['reveal', { 'dropcap': i === 0 }]}>{p}</p>)}
+    </div>
+    {c.intro.pullQuote && <PullQuote text={c.intro.pullQuote} />}
+    {after.length > 0 && (
+      <div class="intro prose">
+        {after.map((p) => <p class="reveal">{p}</p>)}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .intro { margin-inline: auto; }
+  .intro p { font-size: calc(var(--fs-body) * 1.04); }
+  .dropcap::first-letter {
+    float: left;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 4.1em;
+    line-height: 0.82;
+    margin: 0.06em 0.12em 0 0;
+    color: var(--red);
+  }
+  @media (min-width: 900px) {
+    .intro { margin-left: clamp(0rem, 8vw, 8rem); }
+  }
+</style>

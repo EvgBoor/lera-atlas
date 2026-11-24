@@ -1,7 +1,186 @@
 ---
-// OWNER: ui-builder — stub
+// OWNER: ui-builder. Cover: kicker, big serif title, subtitle, credits, decorative Channel crossing.
 import type { SiteContent } from '../i18n';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
+const h = c.hero;
 ---
-<section data-stub="Hero"><h2>Hero</h2></section>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__inner container">
+    <p class="hero__kicker reveal">
+      <span class="hero__flag" aria-hidden="true"><i></i><i></i><i></i></span>
+      {h.kicker}
+    </p>
+    <h1 id="hero-title" class="hero__title reveal" style="--reveal-delay:.08s">{h.title}</h1>
+    <p class="hero__subtitle reveal" style="--reveal-delay:.16s">{h.subtitle}</p>
+
+    <ul class="hero__credits reveal" style="--reveal-delay:.24s">
+      <li class="hero__author">{h.author}</li>
+      <li>{h.supervisor}</li>
+      <li>{h.school}</li>
+    </ul>
+
+    <div class="hero__foot reveal" style="--reveal-delay:.32s">
+      <span class="chip hero__time">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.6V8l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        {c.ui.readingTime}
+      </span>
+      <a class="hero__scroll" href={`#${c.nav[0]?.id ?? 'intro'}`}>
+        {c.ui.scrollHint}
+        <span class="hero__arrow" aria-hidden="true">↓</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Decorative: two shores and a dashed crossing over the Channel -->
+  <svg class="hero__channel" viewBox="0 0 1200 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+    <path class="shore shore--left" d="M0 220 L0 70 C 60 62 90 92 140 96 C 200 100 220 132 270 140 C 320 148 330 180 360 220 Z" />
+    <path class="shore shore--right" d="M1200 220 L1200 40 C 1150 48 1120 30 1070 52 C 1020 74 1010 60 960 88 C 910 116 900 150 860 168 C 830 182 820 200 810 220 Z" />
+    <g class="waves">
+      <path d="M380 170 q 20 -10 40 0 t 40 0" />
+      <path d="M520 196 q 20 -10 40 0 t 40 0" />
+      <path d="M700 150 q 20 -10 40 0 t 40 0" />
+    </g>
+    <path class="route" d="M250 124 C 420 40 640 220 900 96" />
+    <circle class="pin pin--fr" cx="250" cy="124" r="6" />
+    <circle class="pin pin--en" cx="900" cy="96" r="6" />
+    <g class="boat" transform="translate(560 108) rotate(-6)">
+      <path d="M-22 6 L22 6 L14 16 L-14 16 Z" />
+      <path class="sail" d="M0 4 L0 -26 L18 2 Z" />
+    </g>
+  </svg>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: min(100svh, 980px);
+    display: flex;
+    align-items: center;
+    padding-block: clamp(4rem, 8vw, 7rem) clamp(9rem, 18vw, 15rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__inner { position: relative; }
+
+  .hero__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 1.75rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hero__flag { display: inline-flex; height: 0.9rem; border-radius: 3px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
+  .hero__flag i { width: 0.45rem; }
+  .hero__flag i:nth-child(1) { background: var(--blue); }
+  .hero__flag i:nth-child(2) { background: var(--card); }
+  .hero__flag i:nth-child(3) { background: var(--red); }
+
+  .hero__title {
+    font-size: var(--fs-h1);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    max-width: 14ch;
+  }
+  .hero__subtitle {
+    margin: 1.75rem 0 0;
+    max-width: 46ch;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.2rem, 1rem + 1vw, 1.65rem);
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+
+  .hero__credits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 1.1rem 0 0;
+    border-top: 1px solid var(--line);
+    max-width: 46rem;
+    font-size: var(--fs-small);
+    color: var(--ink-soft);
+  }
+  .hero__credits li { position: relative; }
+  .hero__credits li + li::before {
+    content: '';
+    position: absolute;
+    left: -0.7rem; top: 50%;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--red);
+    transform: translateY(-50%);
+  }
+  .hero__author { font-weight: 700; color: var(--ink); }
+
+  .hero__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 2rem;
+  }
+  .hero__time { color: var(--ink-soft); font-weight: 600; }
+  .hero__scroll {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .hero__arrow {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem; height: 2rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    transition: background-color 0.25s, color 0.25s;
+  }
+  .hero__scroll:hover .hero__arrow { background: var(--ink); color: var(--paper); }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__arrow { animation: bob 2.4s var(--ease) infinite; }
+  }
+  @keyframes bob { 50% { transform: translateY(4px); } }
+
+  .hero__channel {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: clamp(120px, 20vw, 220px);
+    z-index: -1;
+  }
+  .shore { fill: var(--paper-3); }
+  .shore--right { fill: color-mix(in srgb, var(--paper-3) 70%, var(--blue-soft)); }
+  .waves path { fill: none; stroke: var(--blue); stroke-width: 1.4; stroke-linecap: round; opacity: 0.35; }
+  .route {
+    fill: none;
+    stroke: var(--red);
+    stroke-width: 1.8;
+    stroke-dasharray: 6 8;
+    stroke-linecap: round;
+    opacity: 0.75;
+  }
+  .pin { stroke: var(--paper); stroke-width: 3; }
+  .pin--fr { fill: var(--blue); }
+  .pin--en { fill: var(--red); }
+  .boat path { fill: var(--ink); }
+  .boat .sail { fill: var(--card); stroke: var(--ink); stroke-width: 1.6; stroke-linejoin: round; }
+  @media (prefers-reduced-motion: no-preference) {
+    .route { animation: dash 30s linear infinite; }
+    .boat { animation: rock 5s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  }
+  @keyframes dash { to { stroke-dashoffset: -280; } }
+  @keyframes rock { 50% { translate: 0 -3px; rotate: 3deg; } }
+</style>

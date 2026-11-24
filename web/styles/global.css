@@ -221,3 +221,5 @@ a:hover { color: var(--red); }
   .site-header, .progress, .back-to-top { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
 }
+
+.viz-frame { min-width: 0; }
