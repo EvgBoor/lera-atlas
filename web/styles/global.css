@@ -193,7 +193,7 @@ a:hover { color: var(--red); }
   line-height: 1.6;
 }
 .tag--fr { background: var(--blue-soft); color: var(--blue); }
-.tag--en { background: var(--red-soft); color: var(--red); }
+.tag--en { background: var(--red-soft); color: #9c3832; }
 
 /* ---------- Cards ---------- */
 .card {

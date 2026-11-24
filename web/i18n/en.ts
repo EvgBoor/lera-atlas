@@ -25,7 +25,7 @@ const content: SiteContent = {
 
   ui: {
     langSwitch: 'RU',
-    readingTime: '≈ 15 min read',
+    readingTime: '≈ 15 min read',
     scrollHint: 'Scroll down',
     backToTop: 'Back to top',
     flipHint: 'Tap to flip',
@@ -51,7 +51,7 @@ const content: SiteContent = {
   intro: {
     title: 'Two Shores of the Channel',
     paragraphs: [
-      'It all started in English class. Some words simply refused to follow the reading rules: the stress landed in an awkward place, and the letters sounded nothing like we had been taught. Why is chef “shef” and not “chef”? Why does the final t in ballet go silent, and why does garage end in a soft “zh”?',
+      'It all started in English class. Some words simply refused to follow the reading rules: the stress landed in an awkward place, and the letters sounded nothing like we had been taught. Why is chef pronounced “shef” and not “tchef”? Why does the final t in ballet go silent, and why does garage end in a French “zh”?',
       'It turns out these words share a biography: almost all of them came into English from French. England and France are only about 33 kilometres apart at the narrowest point of the Channel, yet for nearly a thousand years that strip of water carried not just armies and goods but words — about food, fashion, art, law and power.',
       'Many of them kept a French “accent” in spelling and sound. Once you know where a word comes from, reading it stops being a puzzle. And for anyone learning French as a second foreign language, English suddenly becomes a cheat sheet: thousands of words are already familiar.',
       'In 2026, declared the Year of Unity of the Peoples of Russia, this story feels especially timely: languages that have traded words for centuries do not lose themselves — they grow richer. Diversity is not a barrier but a resource.',
@@ -94,7 +94,7 @@ const content: SiteContent = {
       {
         year: '17th–18th c.',
         title: 'Restoration and Enlightenment',
-        text: 'Charles II returns from exile in France, and Versailles sets the fashion for all of Europe. French becomes the language of diplomacy, salons and good manners.',
+        text: 'Charles II, who spent years of exile at the French court, returns to the throne, and Versailles sets the fashion for all of Europe. French becomes the language of diplomacy, salons and good manners.',
         examples: ['ballet', 'etiquette', 'salon', 'routine', 'regime'],
         intensity: 3,
       },
@@ -117,16 +117,16 @@ const content: SiteContent = {
 
   origins: {
     title: 'The Family Tree of Words',
-    lead: 'English is Germanic in its grammar, but half Romance in its vocabulary. French and Latin roots together account for almost 60% of the word stock.',
+    lead: 'English is Germanic in its grammar, but half Romance in its vocabulary. French and Latin roots together account for more than half (about 56%) of the word stock.',
     shares: [
-      { label: 'French', value: 29, key: 'french' },
-      { label: 'Latin', value: 29, key: 'latin' },
-      { label: 'Germanic', value: 26, key: 'germanic' },
-      { label: 'Greek', value: 6, key: 'greek' },
-      { label: 'Other', value: 10, key: 'other' },
+      { label: 'French', value: 28, key: 'french' },
+      { label: 'Latin', value: 28, key: 'latin' },
+      { label: 'Germanic', value: 25, key: 'germanic' },
+      { label: 'Greek', value: 5, key: 'greek' },
+      { label: 'Other', value: 14, key: 'other' },
     ],
     sourceNote:
-      'Rounded figures from T. Finkenstaedt & D. Wolff, “Ordered Profusion” (1973), based on about 80,000 dictionary entries. “Other” covers other languages, proper names and words of unknown origin. In everyday speech the Germanic share is much higher: the most frequent words (the, is, and, you) are native English.',
+      'Figures from T. Finkenstaedt & D. Wolff, “Ordered Profusion” (1973), based on about 80,000 dictionary entries. “Other” covers other languages, proper names and words of unknown origin. In everyday speech the Germanic share is much higher: the most frequent words (the, is, and, you) are native English.',
     doublets: {
       animalLabel: 'In the field', meatLabel: 'On the plate',
       title: 'In the field it’s English, on the plate it’s French',
@@ -135,7 +135,7 @@ const content: SiteContent = {
         { germanic: 'pig', french: 'pork', gloss: 'Fr. porc — pig; pork' },
         { germanic: 'sheep', french: 'mutton', gloss: 'Fr. mouton — sheep; mutton' },
         { germanic: 'calf', french: 'veal', gloss: 'Old Fr. veel (mod. veau) — calf; veal' },
-        { germanic: 'deer', french: 'venison', gloss: 'Old Fr. venaison — game from the hunt' },
+        { germanic: 'deer', french: 'venison', gloss: 'Old Fr. venaison — game from the hunt; venison' },
       ],
     },
   },
@@ -166,7 +166,7 @@ const content: SiteContent = {
         id: 'word-formation',
         title: 'Word formation',
         text: 'Once at home, a French root takes English suffixes and forms hybrid words.',
-        example: { from: 'beauty (Old Fr. beauté)', to: 'beautiful, beautify' },
+        example: { from: 'beauty (Old Fr. beauté)', to: 'beautiful, beautifully' },
       },
     ],
     types: {
@@ -200,7 +200,7 @@ const content: SiteContent = {
 
   themes: {
     title: 'Thematic Blocks',
-    lead: 'French words did not arrive at random: they filled the areas where France set the tone. The three biggest are food, fashion and art, and power and law.',
+    lead: 'French words did not arrive at random: they filled the areas where France set the tone. The three biggest are food, fashion and art, and politics and law.',
     blocks: [
       {
         id: 'cuisine',
@@ -208,7 +208,7 @@ const content: SiteContent = {
         title: 'Cookery and Gastronomy',
         lead: 'Anglo-Saxons tended the animals; Norman lords ate them. Ever since, anything served with style has sounded French.',
         words: [
-          { en: 'cuisine', fr: 'cuisine', ipa: 'kwɪˈziːn', meaning: 'style of cooking', note: 'Goes back to Latin coquina, “kitchen”. In English it means a style of cooking, never the room.', since: '18th c.' },
+          { en: 'cuisine', fr: 'cuisine', ipa: 'kwɪˈziːn', meaning: 'style of cooking', note: 'Goes back to Latin coquina, “kitchen”. Today in English it means a style of cooking, not the room.', since: '18th c.' },
           { en: 'menu', fr: 'menu', ipa: 'ˈmenjuː', meaning: 'list of dishes', note: 'French menu means “small, detailed” — a detailed list of dishes. Today apps have menus too.', since: '19th c.' },
           { en: 'restaurant', fr: 'restaurant', ipa: 'ˈrestərɒnt', meaning: 'place to eat out', note: 'Literally “restoring”: in 18th-century Paris it was the name of a fortifying broth.', since: '19th c.' },
           { en: 'chef', fr: 'chef', ipa: 'ʃef', meaning: 'professional cook', note: 'Short for chef de cuisine, “head of the kitchen”. Chief is an earlier borrowing of the very same word.', since: '19th c.' },
@@ -235,10 +235,10 @@ const content: SiteContent = {
           { en: 'silhouette', fr: 'silhouette', ipa: 'ˌsɪluˈet', meaning: 'dark outline', note: 'Named after finance minister Étienne de Silhouette, famous for penny-pinching: cheap shadow portraits were named after him.', since: '18th c.' },
           { en: 'genre', fr: 'genre', ipa: 'ˈʒɒ̃rə', meaning: 'category of art', note: 'Initial g = ʒ and a nasal vowel — nearly French.', since: '18th c.' },
           { en: 'collage', fr: 'collage', ipa: 'ˈkɒlɑːʒ', meaning: 'pasted-together artwork', note: 'From colle, “glue”. It arrived with the Cubists in the early 20th century.', since: '20th c.' },
-          { en: 'couture', fr: 'couture', ipa: 'kuːˈtjʊə', meaning: 'high fashion, dressmaking', note: 'In French any “sewing”. In English it mostly appears in haute couture.', since: '20th c.' },
+          { en: 'couture', fr: 'couture', ipa: 'kuːˈtjʊə', meaning: 'high fashion, dressmaking', note: 'In French it means any kind of sewing. In English it mostly appears in haute couture.', since: '20th c.' },
           { en: 'portrait', fr: 'portrait', ipa: 'ˈpɔːtreɪt', meaning: 'picture of a person', note: 'From portraire, “to depict”. Today it also names the upright orientation of a screen.', since: '16th c.' },
         ],
-        takeaway: 'Fashion and art are the most “French” block: here words most often keep their original spelling and sound — because that is exactly what makes them stylish.',
+        takeaway: 'The fashion and art block is the most “French”: here words most often keep their original spelling and sound — because that is exactly what makes them stylish.',
       },
       {
         id: 'politics-law',
@@ -254,7 +254,7 @@ const content: SiteContent = {
           { en: 'attorney', fr: 'atorné', ipa: 'əˈtɜːni', meaning: 'lawyer, legal agent', note: 'Old French atorné, “appointed” to act for someone else.', since: '~1300' },
           { en: 'sovereign', fr: 'souverain', ipa: 'ˈsɒvrɪn', meaning: 'monarch; independent', note: 'The silent g crept into the English spelling by mistaken analogy with reign.', since: '~1300' },
           { en: 'regime', fr: 'régime', ipa: 'reɪˈʒiːm', meaning: 'system of government', note: 'The political sense entered English during the French Revolution.', since: '18th c.' },
-          { en: "coup d'état", fr: "coup d'État", ipa: 'ˌkuːdeɪˈtɑː', meaning: 'sudden seizure of power', note: 'Literally “a blow to the state”. Often shortened to coup — with a silent p.', since: '17th c.' },
+          { en: "coup d’état", fr: "coup d’État", ipa: 'ˌkuːdeɪˈtɑː', meaning: 'sudden seizure of power', note: 'Literally “a blow to the state”. Often shortened to coup — with a silent p.', since: '17th c.' },
           { en: 'bureaucracy', fr: 'bureaucratie', ipa: 'bjʊəˈrɒkrəsi', meaning: 'rule by officials', note: 'A hybrid: French bureau (“office”, originally the cloth covering a desk) + Greek -cracy (“rule”).', since: '19th c.' },
         ],
         takeaway: 'The old legal words (judge, jury, justice) are fully anglicised, while later political ones (regime, coup d’état) still give away their French origin.',
@@ -325,7 +325,7 @@ const content: SiteContent = {
         pattern: 'Stressed -ine',
         sound: '/iːn/',
         examples: ['machine', 'cuisine', 'routine', 'magazine', 'limousine'],
-        hint: 'When stressed, -ine is a long “-een”. Unstressed, it is short and English: medicine, famine (/ɪn/).',
+        hint: 'When stressed, -ine is a long “-een”. Unstressed, it is short and English: engine, famine (/ɪn/).',
       },
       {
         pattern: 'g before e, i',
@@ -353,7 +353,7 @@ const content: SiteContent = {
       { word: 'restaurant', route: ['Fr. restaurer “to restore”', 'Fr. restaurant', 'Eng. restaurant', 'World: ресторан, Restaurant, restaurante'], note: 'The first Parisian restaurants were famous for their restorative broths.' },
       { word: 'menu', route: ['Lat. minutus “small”', 'Fr. menu', 'Eng. menu', 'World: in cafés and on smartphones'], note: 'From a list of dishes to a list of commands in a computer program.' },
       { word: 'garage', route: ['Fr. garer “to shelter”', 'Fr. garage', 'Eng. garage', 'World: гараж, Garage, garaje'], note: 'A word from the age of the first motor cars, the early 20th century.' },
-      { word: 'souvenir', route: ['Lat. subvenire “to come to mind”', 'Fr. souvenir “to remember”', 'Eng. souvenir', 'World: сувенир, Souvenir, suvenir'], note: 'In French, “a memory”; in English, a keepsake.' },
+      { word: 'souvenir', route: ['Lat. subvenire “to come to mind”', 'Fr. (se) souvenir “to remember”', 'Eng. souvenir', 'World: сувенир, Souvenir, suvenir'], note: 'In French, “a memory”; in English, a keepsake.' },
     ],
   },
 
