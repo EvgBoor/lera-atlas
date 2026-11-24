@@ -1,7 +1,296 @@
 ---
-// OWNER: infographics — stub. Props are part of the contract.
+// OWNER: infographics. Timeline of borrowing waves.
+// Props are part of the contract.
 import type { TimelineEvent } from '../../i18n';
 interface Props { events: TimelineEvent[] }
 const { events } = Astro.props;
+
+// ---- Decorative "wave" strip: a smooth curve whose peaks follow intensity.
+const W = 100 * Math.max(events.length, 2);
+const H = 72;
+const pad = 50;
+const pts = events.map((e, i) => {
+  const x = events.length === 1 ? W / 2 : pad + (i * (W - 2 * pad)) / (events.length - 1);
+  const y = H - 10 - (e.intensity / 5) * (H - 22);
+  return { x, y };
+});
+// Catmull-Rom -> cubic Bézier for a soft wave.
+function smooth(p: { x: number; y: number }[]): string {
+  if (p.length === 0) return '';
+  const base = H - 10;
+  let d = `M0 ${base} C ${p[0].x / 2} ${base}, ${p[0].x / 2} ${p[0].y}, ${p[0].x} ${p[0].y}`;
+  for (let i = 0; i < p.length - 1; i++) {
+    const p0 = p[i - 1] ?? p[i];
+    const p1 = p[i];
+    const p2 = p[i + 1];
+    const p3 = p[i + 2] ?? p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2.x} ${p2.y}`;
+  }
+  const last = p[p.length - 1];
+  const mx = (last.x + W) / 2;
+  d += ` C ${mx} ${last.y}, ${mx} ${base}, ${W} ${base}`;
+  return d;
+}
+const wave = smooth(pts);
+const area = `${wave} L ${W} ${H} L 0 ${H} Z`;
+const gid = `tl-grad-${Math.random().toString(36).slice(2, 8)}`;
 ---
-<ol>{events.map((e) => <li>{e.year} — {e.title}</li>)}</ol>
+<div class="tl" data-viz="timeline">
+  {events.length > 0 && (
+    <svg class="tl-wave" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={gid} x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" class="tl-stop-a" />
+          <stop offset="1" class="tl-stop-b" />
+        </linearGradient>
+      </defs>
+      <path class="tl-wave-area" d={area} fill={`url(#${gid})`} />
+      <path class="tl-wave-line" d={wave} pathLength="1" fill="none" stroke={`url(#${gid})`} vector-effect="non-scaling-stroke" />
+    </svg>
+  )}
+
+  <ol class="tl-list">
+    {events.map((e, i) => (
+      <li class="tl-item" data-reveal style={`--int:${e.intensity};--i:${i}`} data-int={e.intensity}>
+        <span class="tl-node" aria-hidden="true"><span class="tl-node-core"></span></span>
+        <article class="tl-card">
+          <header class="tl-head">
+            <span class="tl-year">{e.year}</span>
+            <span class="tl-meter" role="img" aria-label={`${e.intensity}/5`}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <span class:list={['tl-bar', { on: n <= e.intensity }]} style={`--h:${n}`}></span>
+              ))}
+            </span>
+          </header>
+          <h3 class="tl-title">{e.title}</h3>
+          {e.text && <p class="tl-text">{e.text}</p>}
+          {e.examples.length > 0 && (
+            <ul class="tl-chips">
+              {e.examples.map((w) => <li class="tl-chip" lang="en">{w}</li>)}
+            </ul>
+          )}
+        </article>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .tl {
+    --v-ink: var(--c-ink, #1f2a44);
+    --v-muted: var(--c-muted, #555e72);
+    --v-paper: var(--c-paper, #fbf6ec);
+    --v-card: var(--c-card, #fffdf8);
+    --v-line: var(--c-line, rgba(31, 42, 68, 0.14));
+    --v-blue: var(--c-french, #2f5bd3);
+    --v-red: var(--c-latin, #d9485f);
+    color: var(--v-ink);
+    font-family: inherit;
+    margin-block: 1.5rem;
+  }
+
+  /* ---------- wave strip ---------- */
+  .tl-wave {
+    display: block;
+    width: 100%;
+    height: clamp(48px, 9vw, 72px);
+    margin-bottom: 1.25rem;
+    overflow: visible;
+  }
+  .tl-stop-a { stop-color: var(--v-blue); }
+  .tl-stop-b { stop-color: var(--v-red); }
+  .tl-wave-area { opacity: 0.12; }
+  .tl-wave-line { stroke-width: 2.5; stroke-linecap: round; }
+
+  /* ---------- list / spine (mobile: left spine) ---------- */
+  .tl-list {
+    --spine: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 calc(var(--spine) * 2 + 0.25rem);
+    position: relative;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .tl-list::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--spine) - 1px);
+    top: 0.75rem;
+    bottom: 0.75rem;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, var(--v-blue), var(--v-red));
+    opacity: 0.35;
+  }
+
+  .tl-item { position: relative; min-width: 0; }
+
+  .tl-node {
+    --size: calc(10px + var(--int) * 4px);
+    position: absolute;
+    top: 1.55rem;
+    left: calc(-1 * (var(--spine) + 0.25rem) - var(--size) / 2);
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: var(--v-paper);
+    border: 2px solid var(--v-blue);
+    box-shadow: 0 0 0 calc(var(--int) * 2px) rgba(47, 91, 211, 0.12);
+    box-shadow: 0 0 0 calc(var(--int) * 2px) color-mix(in srgb, var(--v-blue) 14%, transparent);
+    display: grid;
+    place-items: center;
+    transform: translateY(-50%);
+    z-index: 1;
+    box-sizing: border-box;
+  }
+  .tl-node-core {
+    width: 45%;
+    height: 45%;
+    border-radius: 50%;
+    background: var(--v-blue);
+    opacity: calc(0.35 + var(--int) * 0.13);
+  }
+  .tl-item[data-int='5'] .tl-node { border-color: var(--v-red); }
+  .tl-item[data-int='5'] .tl-node-core { background: var(--v-red); }
+
+  .tl-card {
+    background: var(--v-card);
+    border: 1px solid var(--v-line);
+    border-radius: 16px;
+    padding: 0.9rem 1rem 1rem;
+    box-shadow: 0 1px 0 rgba(31, 42, 68, 0.04), 0 8px 24px -18px rgba(31, 42, 68, 0.35);
+    min-width: 0;
+  }
+  .tl-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+  .tl-year {
+    font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--v-blue);
+    background: rgba(47, 91, 211, 0.08);
+    background: color-mix(in srgb, var(--v-blue) 9%, transparent);
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    overflow-wrap: anywhere;
+  }
+  .tl-meter {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+    flex: none;
+  }
+  .tl-bar {
+    width: 4px;
+    height: calc(var(--h) * 2.8px);
+    border-radius: 2px;
+    background: var(--v-line);
+  }
+  .tl-bar.on { background: var(--v-blue); }
+  .tl-item[data-int='5'] .tl-bar.on { background: var(--v-red); }
+
+  .tl-title {
+    font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+    font-size: 1.2rem;
+    line-height: 1.25;
+    margin: 0 0 0.35rem;
+    overflow-wrap: break-word;
+  }
+  .tl-text {
+    margin: 0 0 0.6rem;
+    color: var(--v-muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .tl-chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .tl-chip {
+    font-style: italic;
+    font-size: 0.88rem;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--v-line);
+    background: var(--v-paper);
+  }
+
+  /* ---------- desktop: zig-zag around a central spine ---------- */
+  @media (min-width: 760px) {
+    .tl-list {
+      padding: 0;
+      gap: 0;
+    }
+    .tl-list::before { left: calc(50% - 1px); }
+    .tl-item {
+      width: calc(50% - 2.25rem);
+      margin-bottom: -1.75rem;
+    }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-item:nth-child(odd) { justify-self: start; }
+    .tl-item:nth-child(even) { justify-self: end; margin-top: 3rem; }
+    .tl-item:nth-child(odd) .tl-node { left: auto; right: calc(-2.25rem - var(--size) / 2); }
+    .tl-item:nth-child(even) .tl-node { left: calc(-2.25rem - var(--size) / 2); }
+    .tl-item:nth-child(odd) .tl-card { text-align: right; }
+    .tl-item:nth-child(odd) .tl-head { flex-direction: row-reverse; }
+    .tl-item:nth-child(odd) .tl-chips { justify-content: flex-end; }
+  }
+
+  /* ---------- motion (JS adds .is-armed; without JS everything is visible) ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .tl-wave-line { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s ease; }
+    .tl-wave-area { transition: opacity 1.2s ease 0.4s; }
+    .tl.is-armed:not(.is-in) .tl-wave-line { stroke-dashoffset: 1; }
+    .tl.is-armed:not(.is-in) .tl-wave-area { opacity: 0; }
+
+    .tl.is-armed .tl-card,
+    .tl.is-armed .tl-node {
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tl.is-armed .tl-item:not(.is-in) .tl-card { opacity: 0; transform: translateY(16px); }
+    .tl.is-armed .tl-item:not(.is-in) .tl-node { opacity: 0; transform: translateY(-50%) scale(0.3); }
+    .tl-item.is-in[data-int='5'] .tl-node { animation: tl-pulse 2.4s ease-in-out 0.6s 2; }
+  }
+  @keyframes tl-pulse {
+    0%, 100% { box-shadow: 0 0 0 10px rgba(217, 72, 95, 0.14); }
+    50% { box-shadow: 0 0 0 16px rgba(217, 72, 95, 0.04); }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' },
+    );
+    document.querySelectorAll<HTMLElement>('[data-viz="timeline"]').forEach((root) => {
+      root.classList.add('is-armed');
+      io.observe(root);
+      root.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    });
+  }
+</script>

@@ -1,7 +1,207 @@
 ---
-// OWNER: infographics — stub. Travelling words: route chips/map.
+// OWNER: infographics. Travelling words: each word with its route as a connected path of stops.
+// Routes are semantic ordered lists (readable without CSS); stepper vertical on narrow cards,
+// horizontal when the card is wide enough (container query).
 import type { SiteContent } from '../../i18n';
 interface Props { words: SiteContent['travelling']['words'] }
 const { words } = Astro.props;
 ---
-<ul>{words.map((w) => <li>{w.word}: {w.route.join(' → ')}</li>)}</ul>
+<ul class="wr" data-viz="routes">
+  {words.map((w, wi) => (
+    <li class="wr-card" data-reveal style={`--wi:${wi};--n:${w.route.length}`}>
+      <div class="wr-inner">
+        <h3 class="wr-word" lang="en">
+          <span class="wr-word-ic" aria-hidden="true">✦</span>{w.word}
+        </h3>
+        <ol class="wr-route">
+          {w.route.map((stop, i) => (
+            <li
+              class:list={['wr-stop', { first: i === 0, last: i === w.route.length - 1 }]}
+              style={`--i:${i}`}
+            >
+              <span class="wr-dot" aria-hidden="true"></span>
+              <span class="wr-name">{stop}</span>
+            </li>
+          ))}
+        </ol>
+        {w.note && <p class="wr-note">{w.note}</p>}
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .wr {
+    --v-ink: var(--c-ink, #1f2a44);
+    --v-muted: var(--c-muted, #555e72);
+    --v-line: var(--c-line, rgba(31, 42, 68, 0.14));
+    --v-card: var(--c-card, #fffdf8);
+    --v-paper: var(--c-paper, #fbf6ec);
+    --v-blue: var(--c-french, #2f5bd3);
+    --v-red: var(--c-latin, #d9485f);
+    list-style: none;
+    margin: 1.5rem 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1rem;
+    color: var(--v-ink);
+    font-family: inherit;
+  }
+  .wr-card {
+    container-type: inline-size;
+    min-width: 0;
+  }
+  .wr-inner {
+    height: 100%;
+    box-sizing: border-box;
+    padding: 1rem 1.1rem 1.1rem;
+    border-radius: 18px;
+    border: 1px solid var(--v-line);
+    background:
+      radial-gradient(circle at 1px 1px, rgba(31, 42, 68, 0.07) 1px, transparent 1.5px) 0 0 / 14px 14px,
+      var(--v-card);
+    box-shadow: 0 8px 24px -20px rgba(31, 42, 68, 0.45);
+  }
+  .wr-word {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin: 0 0 0.85rem;
+    font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+    font-size: 1.45rem;
+    font-style: italic;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  .wr-word-ic { color: var(--v-red); font-size: 0.75em; font-style: normal; }
+
+  /* ---------- route: vertical stepper (default / narrow) ---------- */
+  .wr-route {
+    --dot: 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .wr-stop {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--dot) minmax(0, 1fr);
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+  /* connector to the next stop */
+  .wr-stop:not(.last)::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--dot) / 2 - 1px);
+    top: calc(50% + var(--dot) / 2 + 2px);
+    height: calc(100% - var(--dot) + 0.55rem - 4px);
+    width: 0;
+    border-left: 2px dashed rgba(47, 91, 211, 0.45);
+    transform-origin: top;
+  }
+  .wr-dot {
+    width: var(--dot);
+    height: var(--dot);
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 2px solid var(--v-blue);
+    background: var(--v-paper);
+  }
+  .wr-stop.first .wr-dot { background: var(--v-blue); }
+  .wr-stop.last .wr-dot {
+    border-color: var(--v-red);
+    background: var(--v-red);
+    box-shadow: 0 0 0 4px rgba(217, 72, 95, 0.16);
+  }
+  .wr-name {
+    font-size: 0.95rem;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+    min-width: 0;
+  }
+  .wr-stop.last .wr-name { font-weight: 700; }
+
+  .wr-note {
+    margin: 0.9rem 0 0;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--v-line);
+    color: var(--v-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  /* ---------- route: horizontal when the card is wide ---------- */
+  @container (min-width: 26rem) {
+    .wr-route {
+      grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+      gap: 0.25rem;
+      align-items: start;
+    }
+    .wr-stop {
+      grid-template-columns: none;
+      grid-template-rows: var(--dot) auto;
+      justify-items: center;
+      text-align: center;
+      gap: 0.45rem;
+    }
+    .wr-stop:not(.last)::after {
+      left: calc(50% + var(--dot) / 2 + 3px);
+      top: calc(var(--dot) / 2 - 1px);
+      width: calc(100% - var(--dot) - 6px + 0.25rem);
+      height: 0;
+      border-left: 0;
+      border-top: 2px dashed rgba(47, 91, 211, 0.45);
+      transform-origin: left;
+    }
+    .wr-name { font-size: 0.88rem; hyphens: auto; }
+  }
+
+  /* ---------- motion ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .wr.is-armed .wr-inner { transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .wr.is-armed .wr-card:not(.is-in) .wr-inner { opacity: 0; transform: translateY(14px); }
+
+    .wr.is-armed .wr-dot,
+    .wr.is-armed .wr-name {
+      transition: opacity 0.4s ease calc(0.25s + var(--i) * 0.28s),
+        transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) calc(0.25s + var(--i) * 0.28s);
+    }
+    .wr.is-armed .wr-stop:not(.last)::after {
+      transition: transform 0.3s ease calc(0.4s + var(--i) * 0.28s);
+    }
+    .wr.is-armed .wr-card:not(.is-in) .wr-dot { opacity: 0; transform: scale(0.2); }
+    .wr.is-armed .wr-card:not(.is-in) .wr-name { opacity: 0; }
+    .wr.is-armed .wr-card:not(.is-in) .wr-stop::after { transform: scale(0); }
+    .wr-card.is-in .wr-stop.last .wr-dot { animation: wr-ping 1.8s ease-out calc(0.6s + var(--n) * 0.28s) 2; }
+  }
+  @keyframes wr-ping {
+    0% { box-shadow: 0 0 0 0 rgba(217, 72, 95, 0.35); }
+    100% { box-shadow: 0 0 0 12px rgba(217, 72, 95, 0); }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.3, rootMargin: '0px 0px -5% 0px' },
+    );
+    document.querySelectorAll<HTMLElement>('[data-viz="routes"]').forEach((root) => {
+      root.classList.add('is-armed');
+      root.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    });
+  }
+</script>
