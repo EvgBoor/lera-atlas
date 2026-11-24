@@ -3,7 +3,8 @@
 import type { SiteContent } from '../i18n';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
-const other = c.locale === 'ru' ? { href: '/en/', lang: 'en' } : { href: '/', lang: 'ru' };
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const other = c.locale === 'ru' ? { href: `${base}en/`, lang: 'en' } : { href: base, lang: 'ru' };
 ---
 <footer class="footer">
   <svg class="footer__wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12 Q 50 0 100 12 T 200 12 T 300 12 T 400 12 T 500 12 T 600 12 T 700 12 T 800 12 T 900 12 T 1000 12 T 1100 12 T 1200 12" /></svg>

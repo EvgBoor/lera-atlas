@@ -3,7 +3,8 @@
 import type { SiteContent } from '../i18n';
 interface Props { c: SiteContent }
 const { c } = Astro.props;
-const other = c.locale === 'ru' ? { href: '/en/', lang: 'en' } : { href: '/', lang: 'ru' };
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const other = c.locale === 'ru' ? { href: `${base}en/`, lang: 'en' } : { href: base, lang: 'ru' };
 ---
 <header class="site-header" id="top">
   <div class="site-header__inner container">
