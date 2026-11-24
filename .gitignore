@@ -4,3 +4,6 @@ dist/
 .DS_Store
 ~$*
 .env
+
+# Source briefs (personal data) — local only
+src/*.docx
