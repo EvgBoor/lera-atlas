@@ -1,0 +1,7 @@
+---
+// OWNER: infographics — stub. Travelling words: route chips/map.
+import type { SiteContent } from '../../i18n';
+interface Props { words: SiteContent['travelling']['words'] }
+const { words } = Astro.props;
+---
+<ul>{words.map((w) => <li>{w.word}: {w.route.join(' → ')}</li>)}</ul>

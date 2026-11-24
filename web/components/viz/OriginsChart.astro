@@ -1,0 +1,7 @@
+---
+// OWNER: infographics — stub.
+import type { OriginShare } from '../../i18n';
+interface Props { shares: OriginShare[]; sourceNote: string }
+const { shares, sourceNote } = Astro.props;
+---
+<figure><ul>{shares.map((s) => <li>{s.label}: {s.value}%</li>)}</ul><figcaption>{sourceNote}</figcaption></figure>

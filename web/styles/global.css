@@ -1,0 +1,9 @@
+/* OWNER: ui-builder. Design tokens live here; viz components use these vars. */
+:root {
+  --c-french: #2f5bd3;
+  --c-latin: #d9485f;
+  --c-germanic: #2a9d8f;
+  --c-greek: #e9a23b;
+  --c-other: #9aa0a6;
+}
+body { margin: 0; font-family: system-ui, sans-serif; }

@@ -1,0 +1,7 @@
+---
+// OWNER: infographics — stub. Animal (Germanic) vs meat (French).
+import type { SiteContent } from '../../i18n';
+interface Props { doublets: SiteContent['origins']['doublets'] }
+const { doublets } = Astro.props;
+---
+<div>{doublets.pairs.map((p) => <p>{p.germanic} → {p.french}</p>)}</div>

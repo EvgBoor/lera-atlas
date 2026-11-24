@@ -1,0 +1,21 @@
+---
+// OWNER: ui-builder
+import type { SiteContent } from '../i18n';
+import '../styles/global.css';
+interface Props { c: SiteContent }
+const { c } = Astro.props;
+---
+<!doctype html>
+<html lang={c.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{c.meta.title}</title>
+    <meta name="description" content={c.meta.description} />
+    <link rel="alternate" hreflang="ru" href="/" />
+    <link rel="alternate" hreflang="en" href="/en/" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

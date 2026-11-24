@@ -1,0 +1,39 @@
+---
+// OWNER: main (orchestrator). Section order of the longread.
+import type { SiteContent } from '../i18n';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Intro from './Intro.astro';
+import TimelineSection from './TimelineSection.astro';
+import Origins from './Origins.astro';
+import Adaptation from './Adaptation.astro';
+import Themes from './Themes.astro';
+import FalseFriends from './FalseFriends.astro';
+import Reading from './Reading.astro';
+import Travelling from './Travelling.astro';
+import Conclusion from './Conclusion.astro';
+import About from './About.astro';
+import Sources from './Sources.astro';
+import Footer from './Footer.astro';
+interface Props { c: SiteContent }
+const { c } = Astro.props;
+---
+<Base c={c}>
+  <Header c={c} />
+  <main>
+    <Hero c={c} />
+    <Intro c={c} />
+    <TimelineSection c={c} />
+    <Origins c={c} />
+    <Adaptation c={c} />
+    <Themes c={c} />
+    <FalseFriends c={c} />
+    <Reading c={c} />
+    <Travelling c={c} />
+    <Conclusion c={c} />
+    <About c={c} />
+    <Sources c={c} />
+  </main>
+  <Footer c={c} />
+</Base>

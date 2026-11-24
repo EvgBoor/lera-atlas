@@ -1,0 +1,7 @@
+---
+// OWNER: infographics — stub. Props are part of the contract.
+import type { TimelineEvent } from '../../i18n';
+interface Props { events: TimelineEvent[] }
+const { events } = Astro.props;
+---
+<ol>{events.map((e) => <li>{e.year} — {e.title}</li>)}</ol>
