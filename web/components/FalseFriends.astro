@@ -170,6 +170,11 @@ const f = c.falseFriends;
   .flip:focus-visible { outline: none; }
   .flip:focus-visible .flip__face { outline: 2px solid var(--blue); outline-offset: 3px; }
 
+  @media (max-width: 640px) {
+    .flip__inner { min-height: 10.5rem; }
+    .flip__face { padding: 1.15rem 1.25rem; }
+    .flip__w { font-size: 1.35rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .flip__inner { transition: none; transform: none !important; }
     .flip__face { backface-visibility: visible; transition: opacity 0.2s; }

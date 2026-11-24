@@ -169,10 +169,11 @@ a:hover { color: var(--red); }
   align-items: center;
   gap: 0.35em;
   padding: 0.18em 0.7em;
-  border-radius: 999px;
+  border-radius: 1em;
   border: 1px solid var(--line);
   background: var(--card);
   font-size: 0.85em;
+  max-width: 100%;
   line-height: 1.5;
 }
 .chip-list {

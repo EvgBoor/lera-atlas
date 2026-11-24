@@ -109,15 +109,17 @@ const h = c.hero;
     font-size: var(--fs-small);
     color: var(--ink-soft);
   }
-  .hero__credits li { position: relative; }
+  .hero__credits li { display: inline-flex; align-items: center; gap: 0.55rem; }
   .hero__credits li + li::before {
     content: '';
-    position: absolute;
-    left: -0.7rem; top: 50%;
+    flex: none;
     width: 4px; height: 4px;
     border-radius: 50%;
     background: var(--red);
-    transform: translateY(-50%);
+  }
+  @media (max-width: 640px) {
+    .hero__credits { flex-direction: column; }
+    .hero__credits li + li::before { display: none; }
   }
   .hero__author { font-weight: 700; color: var(--ink); }
 

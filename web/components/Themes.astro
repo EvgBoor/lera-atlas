@@ -67,6 +67,11 @@ const t = c.themes;
   }
   .tabs::-webkit-scrollbar { display: none; }
   .tabs[hidden] { display: none; }
+  @media (max-width: 640px) {
+    .tabs { flex-direction: column; width: 100%; border-radius: var(--r); gap: 0.2rem; }
+    .tab { border-radius: 12px; }
+    .tab__count { margin-left: auto; }
+  }
   .tab {
     flex: none;
     display: inline-flex;
