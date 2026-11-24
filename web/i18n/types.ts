@@ -94,6 +94,15 @@ export interface SiteContent {
     scrollHint: string;
     backToTop: string;
     flipHint: string;
+    /** Labels for small UI headings */
+    labels: {
+      aim: string;
+      objectives: string;
+      methods: { category: string; methods: string; purpose: string };
+      falseFriends: { fr: string; en: string; correct: string };
+      /** aria-label prefix for timeline intensity meter, e.g. "Интенсивность заимствований" */
+      intensity: string;
+    };
   };
 
   hero: {
@@ -118,7 +127,12 @@ export interface SiteContent {
     shares: OriginShare[];
     sourceNote: string;
     /** Famous doublets: animal (Germanic) vs meat (French) */
-    doublets: { title: string; pairs: { germanic: string; french: string; gloss: string }[] };
+    doublets: {
+      title: string;
+      /** Column headings, e.g. "В поле" / "На тарелке" */
+      animalLabel: string;
+      meatLabel: string;
+      pairs: { germanic: string; french: string; gloss: string }[] };
   };
 
   /** How words adapt + types of borrowing */

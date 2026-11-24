@@ -6,7 +6,7 @@ const { c } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const other = c.locale === 'ru' ? { href: `${base}en/`, lang: 'en' } : { href: base, lang: 'ru' };
 ---
-<header class="site-header" id="top">
+<header class="site-header">
   <div class="site-header__inner container">
     <a class="brand" href="#top" aria-label={c.meta.title}>
       <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">

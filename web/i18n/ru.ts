@@ -29,6 +29,13 @@ const content: SiteContent = {
     scrollHint: 'Листайте вниз',
     backToTop: 'Наверх',
     flipHint: 'Нажмите, чтобы перевернуть',
+    labels: {
+      aim: 'Цель',
+      objectives: 'Задачи',
+      methods: { category: 'Группа', methods: 'Методы', purpose: 'Зачем' },
+      falseFriends: { fr: 'По-французски', en: 'По-английски', correct: 'Как правильно' },
+      intensity: 'Интенсивность заимствований',
+    },
   },
 
   hero: {
@@ -121,6 +128,7 @@ const content: SiteContent = {
     sourceNote:
       'Округлённые данные по исследованию T. Finkenstaedt & D. Wolff «Ordered Profusion» (1973), около 80 000 слов словаря. «Другие» — прочие языки, имена собственные и слова неясного происхождения. В живой речи доля германских слов заметно выше: самые частые слова (the, is, and, you) — исконно английские.',
     doublets: {
+      animalLabel: 'На пастбище', meatLabel: 'На столе',
       title: 'На пастбище — по-английски, на столе — по-французски',
       pairs: [
         { germanic: 'cow', french: 'beef', gloss: 'фр. bœuf — бык; говядина' },

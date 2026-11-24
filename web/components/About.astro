@@ -11,8 +11,13 @@ const a = c.about;
     <SectionHead c={c} id="about" title={a.title} />
 
     <div class="about">
-      <p class="about__aim reveal">{a.aim}</p>
+      <div class="reveal">
+        <h3 class="about__label">{c.ui.labels.aim}</h3>
+        <p class="about__aim">{a.aim}</p>
+      </div>
 
+      <div>
+      <h3 class="about__label">{c.ui.labels.objectives}</h3>
       <ol class="objectives">
         {a.objectives.map((o, i) => (
           <li class="reveal" style={`--reveal-delay:${(i % 4) * 0.05}s`}>
@@ -21,10 +26,18 @@ const a = c.about;
           </li>
         ))}
       </ol>
+      </div>
     </div>
 
     <div class="methods-wrap reveal">
       <table class="methods" aria-labelledby="about-title">
+        <thead>
+          <tr>
+            <th scope="col">{c.ui.labels.methods.category}</th>
+            <th scope="col">{c.ui.labels.methods.methods}</th>
+            <th scope="col">{c.ui.labels.methods.purpose}</th>
+          </tr>
+        </thead>
         <tbody>
           {a.methods.map((m) => (
             <tr>
@@ -53,6 +66,16 @@ const a = c.about;
 <style>
   .about { display: grid; gap: clamp(2rem, 4vw, 3.5rem); }
   @media (min-width: 900px) { .about { grid-template-columns: 1fr 1.1fr; align-items: start; } }
+
+  .about__label {
+    margin: 0 0 0.9rem;
+    font-family: var(--font-sans, inherit);
+    font-size: var(--fs-small);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
 
   .about__aim {
     margin: 0;
@@ -85,7 +108,19 @@ const a = c.about;
   .methods { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
   .methods th, .methods td { text-align: left; vertical-align: top; padding: 1.1rem 1.25rem; }
   .methods tr + tr > * { border-top: 1px solid var(--line); }
-  .methods th {
+  .methods thead th {
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: transparent;
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .methods tbody th {
     width: 22%;
     font-family: var(--font-serif);
     font-size: 1.1rem;
@@ -97,6 +132,7 @@ const a = c.about;
 
   @media (max-width: 720px) {
     .methods, .methods tbody, .methods tr, .methods th, .methods td { display: block; width: 100%; }
+    .methods thead { display: none; }
     .methods th { padding-bottom: 0.6rem; }
     .methods td { padding-top: 0.4rem; padding-bottom: 0.4rem; }
     .methods td:last-child { padding-bottom: 1.2rem; }

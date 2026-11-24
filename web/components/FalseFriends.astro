@@ -43,6 +43,7 @@ const f = c.falseFriends;
                 </span>
                 <span class="flip__correct">
                   <span aria-hidden="true">✓</span>
+                  <span class="sr-only">{c.ui.labels.falseFriends.correct}:</span>
                   <span>{it.correct}</span>
                 </span>
               </span>
@@ -56,9 +57,9 @@ const f = c.falseFriends;
       <table class="ff-table" aria-labelledby="false-friends-title">
         <thead>
           <tr>
-            <th scope="col"><span class="tag tag--fr">fr</span></th>
-            <th scope="col"><span class="tag tag--en">en</span></th>
-            <th scope="col"><span class="tag">✓</span></th>
+            <th scope="col"><span class="tag tag--fr" aria-hidden="true">fr</span> {c.ui.labels.falseFriends.fr}</th>
+            <th scope="col"><span class="tag tag--en" aria-hidden="true">en</span> {c.ui.labels.falseFriends.en}</th>
+            <th scope="col"><span class="tag" aria-hidden="true">✓</span> {c.ui.labels.falseFriends.correct}</th>
           </tr>
         </thead>
         <tbody>

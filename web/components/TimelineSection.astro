@@ -10,7 +10,7 @@ const { c } = Astro.props;
   <div class="container">
     <SectionHead c={c} id="timeline" title={c.timeline.title} lead={c.timeline.lead} />
     <div class="viz-frame reveal">
-      <Timeline events={c.timeline.events} />
+      <Timeline events={c.timeline.events} intensityLabel={c.ui.labels.intensity} />
     </div>
   </div>
 </section>

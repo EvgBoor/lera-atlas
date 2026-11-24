@@ -29,6 +29,13 @@ const content: SiteContent = {
     scrollHint: 'Scroll down',
     backToTop: 'Back to top',
     flipHint: 'Tap to flip',
+    labels: {
+      aim: 'Aim',
+      objectives: 'Objectives',
+      methods: { category: 'Category', methods: 'Methods', purpose: 'Purpose' },
+      falseFriends: { fr: 'In French', en: 'In English', correct: 'Say instead' },
+      intensity: 'Borrowing intensity',
+    },
   },
 
   hero: {
@@ -121,6 +128,7 @@ const content: SiteContent = {
     sourceNote:
       'Rounded figures from T. Finkenstaedt & D. Wolff, “Ordered Profusion” (1973), based on about 80,000 dictionary entries. “Other” covers other languages, proper names and words of unknown origin. In everyday speech the Germanic share is much higher: the most frequent words (the, is, and, you) are native English.',
     doublets: {
+      animalLabel: 'In the field', meatLabel: 'On the plate',
       title: 'In the field it’s English, on the plate it’s French',
       pairs: [
         { germanic: 'cow', french: 'beef', gloss: 'Fr. bœuf — ox; beef' },

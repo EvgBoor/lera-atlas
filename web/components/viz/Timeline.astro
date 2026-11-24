@@ -2,8 +2,9 @@
 // OWNER: infographics. Timeline of borrowing waves.
 // Props are part of the contract.
 import type { TimelineEvent } from '../../i18n';
-interface Props { events: TimelineEvent[] }
-const { events } = Astro.props;
+interface Props { events: TimelineEvent[]; intensityLabel?: string }
+const { events, intensityLabel } = Astro.props;
+const meterLabel = (n: number) => (intensityLabel ? `${intensityLabel}: ${n}/5` : `${n}/5`);
 
 // ---- Decorative "wave" strip: a smooth curve whose peaks follow intensity.
 const W = 100 * Math.max(events.length, 2);
@@ -60,7 +61,7 @@ const gid = `tl-grad-${Math.random().toString(36).slice(2, 8)}`;
         <article class="tl-card">
           <header class="tl-head">
             <span class="tl-year">{e.year}</span>
-            <span class="tl-meter" role="img" aria-label={`${e.intensity}/5`}>
+            <span class="tl-meter" role="img" aria-label={meterLabel(e.intensity)}>
               {[1, 2, 3, 4, 5].map((n) => (
                 <span class:list={['tl-bar', { on: n <= e.intensity }]} style={`--h:${n}`}></span>
               ))}
